@@ -1,5 +1,6 @@
-#ifndef DARRAY_H
-#define DARRAY_H
+
+#ifndef LIBDS_DARRAY_H
+#define LIBDS_DARRAY_H
 
 #include <stddef.h>
 
@@ -10,18 +11,19 @@ typedef struct {
     size_t elem_size;
 } darray;
 
-/* lifecycle */
+/* Lifecycle */
 int da_init(darray *arr, size_t elem_size);
 void da_free(darray *arr);
 
-/* capacity */
+/* Capacity */
 int da_reserve(darray *arr, size_t capacity);
 void da_clear(darray *arr);
 
-/* access */
+/* Access */
 void *da_get(darray *arr, size_t index);
 
-/* modifiers */
+/* Modifiers */
 int da_push_back(darray *arr, const void *elem);
+int da_pop_back(darray *arr);
 
-#endif
+#endif /* LIBDS_DARRAY_H */

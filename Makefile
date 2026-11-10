@@ -1,11 +1,37 @@
+
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -Iinclude
+AR = ar
 
-SRC = src/darray.c main.c
-OUT = app
+CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -g
+CPPFLAGS = -Iinclude
 
-all:
-	$(CC) $(CFLAGS) $(SRC) -o $(OUT)
+BUILD = build
+LIB = $(BUILD)/libds.a
+
+SRC = $(wildcard src/*.c)
+OBJ = $(patsubst src/%.c,$(BUILD)/%.o,$(SRC))
+
+.PHONY: all clean example test
+
+all: $(LIB)
+
+$(BUILD):
+	mkdir -p $(BUILD)
+
+$(BUILD)/%.o: src/%.c | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -MMD -MP -c $< -o $@
+
+$(LIB): $(OBJ)
+	$(AR) rcs $@ $^
+
+example: $(LIB)
+	$(CC) $(CPPFLAGS) $(CFLAGS) examples/DArray.c $(LIB) -o $(BUILD)/example
+
+test: $(LIB)
+	$(CC) $(CPPFLAGS) $(CFLAGS) tests/Test_DArray.c $(LIB) -o $(BUILD)/test_DArray
+	./$(BUILD)/test_DArray
 
 clean:
-	rm -f $(OUT)
+	rm -rf $(BUILD)
+
+-include $(OBJ:.o=.d)
